@@ -91,7 +91,7 @@ class esriHelper:
             self.writeToLog ('db ' + name + ' name does not have .fgb extension - adding')
         
         try:
-            self.log.writeToLog(path + '\\' + name2)
+            self.writeToLog(path + '\\' + name2)
             if arcpy.Exists(path + '\\' + name2):
                 self.writeToLog(name + '  already Exists!  Deleting current version...')
                 self.deleteFile(path + '\\' + name2, 'Workspace')
