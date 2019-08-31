@@ -5,9 +5,10 @@ import os
 
 class esriHelper:
 
-    def __init__(self, logname, loglocation):
-        self.loglocation = loglocation
-        self.logname = logname
+    def __init__(self, logname, loglocation, module):
+        self.loglocation = loglocation 
+        self.logname = logname # + '_' + datetime.date.today().strftime("%Y_%B_%d")
+        self.module = module
 
     def writeToLog(self, message):
         # Purpose: to write a string to a text file; used as a program event log
@@ -17,7 +18,7 @@ class esriHelper:
         # writes text to a text file.
         logName = self.loglocation + '//' + self.logname +'_' + datetime.date.today().strftime("%Y_%B_%d") + ".txt"
         log = open(logName, 'a')
-        log.write('\n' + datetime.datetime.today().strftime('%m/%d/%Y - %H:%M:%S:%f') + ' - ' + message + '\n')
+        log.write('\n' + self.module + ' - ' + datetime.datetime.today().strftime('%m/%d/%Y - %H:%M:%S:%f') + ' - ' + message)
         log.close()
 
     def writeGPToLog(self):
@@ -25,6 +26,7 @@ class esriHelper:
         # Input: None 
         # Output: Write the last 3 lines of the current Geoprocessing log  to the text log file created by the writeToLog() function.
         self.writeToLog(arcpy.GetMessages())
+        self.writeToLog('~~~~~~~~~~~~~~~~~~~~~~~~')
 
     def returnFieldMap(self, fc):
         # Purpose: Create a field map for the inputted feature class for use with GP tools
@@ -113,3 +115,29 @@ class esriHelper:
         else:
             return string[:position]
 
+    def readDatFile(self, dat):
+        # Purpose: To read a list of values from a text file - each piece of data gets its own line
+        # Input: A text file with one value per a line
+        # Output: a list object containg the values in the text file
+
+        copyList = []
+        datFile = open(dat) 
+        line = datFile.readline()
+        while line:
+            copyList.append(line.rstrip('\n'))
+            line = datFile.readline() 
+
+        datFile.close()
+
+        return copyList
+
+    def fieldMatch(self,myString,myList):
+        # Purpose: Return a boolean value indicating if a supplied string is in a supplied list
+        # Input: a string and a list of strings
+        # Output:  Boolean Value - True if String is in List, False if it is not
+        
+        for x in myList:
+            if myString.upper() == x.upper():
+                return True
+                
+        return False
